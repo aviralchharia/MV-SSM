@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="While significant progress has been made in single-view 3D human pose estimation, 
+        multi-view 3D human pose estimation remains challenging, particularly in terms of 
+        generalizing to new camera configurations. Existing attention-based transformers 
+        often struggle to accurately model the spatial arrangement of keypoints, especially 
+        in occluded scenarios. Additionally, they tend to overfit specific camera arrangements 
+        and visual scenes from training data, resulting in substantial performance drops 
+        in new settings. In this study, we introduce a novel Multi-View State Space Modeling 
+        framework, named MV-SSM, for robustly estimating 3D human keypoints. We 
+        explicitly model the joint spatial sequence at two distinct levels: the feature 
+        level from multi-view images and the person keypoint level. We propose a 
+        Projective State Space (PSS) block to learn a generalized representation of 
+        joint spatial arrangements using state space modeling. Moreover, we modify Mamba's 
+        traditional scanning into an effective Grid Token-guided Bidirectional Scanning (GTBS), 
+        which is integral to the PSS block. Multiple experiments demonstrate that MV-SSM 
+        achieves strong generalization, outperforming state-of-the-art methods: 
+        +10.8 on AP25 +24% on the challenging three-camera setting in CMU Panoptic, 
+        +7.0 on AP25 +13% on varying camera arrangements, and +15.3 PCP +38% on 
+        Campus A1 in cross-dataset evaluations.">
+  <meta name="keywords" content="3D Human Pose Estimation, Digital Humans, Multi-View, Computer Vision, Human Sensing">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MV-SSM: Multi-View State Space Modeling for 3D Human Pose Estimation</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</head>
+<body>
+
+
+  
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <br>          
+          <h1 class="title is-1 publication-title">MV-SSM: Multi-View State Space Modeling for 3D Human Pose Estimation</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://aviralchharia.github.io/" target="_blank">Aviral Chharia</a><sup>1</sup>, </span>
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/wenbogou/" target="_blank">Wenbo Gou</a><sup>1</sup>, </span>
+            <span class="author-block">
+              <a href="https://www.haoyed.com" target="_blank">Haoye Dong</a><sup>2</sup></span>
+          </div>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Carnegie Mellon University, <sup>2</sup>National University of Singapore</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <h1 class="is-size-3 publication-title"><strong>CVPR 2025</strong></h1>
+          </div>
+
+          <section class="hero teaser">
+            <div class="container is-max-desktop">
+              <br>
+                <div style="display: flex; justify-content: center;">
+                  <img src="./static/images/ri-cmu.png" alt="Carnegie Mellon University" style="width: 25%; height: 25%; margin-right: 20px;">
+                  <img src="./static/images/NUS.png" alt="National University of Singapore" style="width: 20%; height: 25%; margin-right: 10px;">
+                </div>
+            </div>
+          </section> 
+
+          <br>
+
+          <!-- Official Proceedings Link -->
+          <span class="link-block">
+            <a href="https://openaccess.thecvf.com/content/CVPR2025/html/Chharia_MV-SSM_Multi-View_State_Space_Modeling_for_3D_Human_Pose_Estimation_CVPR_2025_paper.html" target="_blank"
+                class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                  <i class="fas fa-file-alt"></i>
+              </span>
+              <span>Paper</span>
+            </a>
+          </span>
+
+          <!-- YouTube Link -->
+          <span class="link-block">
+            <a href="https://www.youtube.com/watch?v=dMsk4uZqs54" target="_blank"
+              class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">
+                  <i class="fab fa-youtube"></i>
+              </span>
+              <span>Video</span>
+            </a>
+          </span>
+
+          <!-- Code Link -->
+          <span class="link-block">
+            <a href="https://github.com/aviralchharia/MV-SSM" target="_blank"
+              class="external-link button is-normal is-rounded is-light">
+              <span class="icon">
+                  <i class="fab fa-github"></i>
+              </span>
+              <span>Code</span>
+            </a>
+          </span>
+
+          <!-- Citation Link -->
+          <span class="link-block">
+            <a href="static/scholar.html" target="_blank"
+            class="external-link button is-normal is-rounded is-dark">
+            <span>BibTeX</span>
+          </a>
+          </span>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div style="display: flex; justify-content: center;">
+        <img src="./static/images/Motivation_Updated.jpg" alt="Motivation" style="width: 70%; height: auto;">
+      </div>
+      <div class="content has-text-justified">
+        <br> 
+        <strong>Motivation.</strong> Comparison of different token scanning methods. (a) Cross Attention 
+        acts on all image tokens. (b) Projective Attention obtains anchors with perspective projection 
+        and selectively attends to sample tokens surrounding the anchor points. (c) The proposed Grid 
+        Token-guided Bidirectional Scanning (GTBS) encodes the local context and the joint spatial 
+        sequence at the visual feature and person-keypoint levels.<br><br>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">
+          Abstract
+        </h2>
+        <div class="content has-text-justified">
+          <p>
+            While significant progress has been made in single-view 3D human pose estimation, 
+            multi-view 3D human pose estimation remains challenging, particularly in terms of 
+            generalizing to new camera configurations. Existing attention-based transformers 
+            often struggle to accurately model the spatial arrangement of keypoints, especially 
+            in occluded scenarios. Additionally, they tend to overfit specific camera arrangements 
+            and visual scenes from training data, resulting in substantial performance drops 
+            in new settings. In this study, we introduce a novel <strong>M</strong>ulti-<strong>V</strong>iew 
+            <strong>S</strong>tate <strong>S</strong>pace <strong>M</strong>odeling framework, 
+            named <strong>MV-SSM</strong>, for robustly estimating 3D human keypoints. We 
+            explicitly model the joint spatial sequence at two distinct levels: the feature 
+            level from multi-view images and the person keypoint level. We propose a 
+            Projective State Space (PSS) block to learn a generalized representation of 
+            joint spatial arrangements using state space modeling. Moreover, we modify Mamba's 
+            traditional scanning into an effective Grid Token-guided Bidirectional Scanning (GTBS), 
+            which is integral to the PSS block. Multiple experiments demonstrate that MV-SSM 
+            achieves strong generalization, outperforming state-of-the-art methods: 
+            <strong>+10.8</strong> on AP<sub>25</sub> <strong>+24%</strong> on the challenging 
+            three-camera setting in CMU Panoptic, <strong>+7.0</strong> on AP<sub>25</sub> 
+            <strong>+13%</strong> on varying camera arrangements, and <strong>+15.3</strong> 
+            PCP <strong>+38%</strong> on Campus A1 in cross-dataset evaluations.
+          </p>
+        </div>
+      
+        <table width="100%">
+          <tr>
+            <td width="50%">
+              <iframe
+                width="100%"
+                style="aspect-ratio: 16 / 9; height: auto;"
+                src="https://www.youtube.com/embed/dMsk4uZqs54?autoplay=1&mute=1&loop=1&playlist=dMsk4uZqs54&rel=0"
+                title="MV-SSM"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                class="bigvideo">
+              </iframe>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">
+          Model Architecture
+        </h2>
+        <div style="display: flex; justify-content: center;">
+          <img src="./static/images/Model_Architecture_Updated.jpg" alt="MV-SSM Model Architecture" style="width: 90%; height: auto;">
+        </div>
+          <div class="content has-text-justified">
+          <br>
+          MV-SSM proposes multi-view images through ResNet-50 backbone to extract multi-scale features, which are
+          refined by stacked Projective State Space (PSS) blocks. These blocks leverage projective attenton and 
+          state space modeling to progressively refine the keypoints, with final 3D keypoints estimated 
+          via geometric triangulation.
+        </div>
+        <div style="display: flex; justify-content: center;">
+          <img src="./static/images/Block_Diagram_Updated.jpg" alt="Block Diagrams" style="width: 80%; height: auto;">
+        </div>
+        <div class="content has-text-justified">
+          <br> 
+          <strong>Model Architecture.</strong> Architecture of the (a) Mamba block, (b) VSS block, and (c) 
+          the proposed PSS block. The PSS block captures joint spatial relationships through projective 
+          attention and state space modeling, progressively refining results.<br><br>
+        </div>
+
+      </div>
+    </div>
+
+    
+  </div>
+
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">
+          Contributions
+        </h2>
+        <ul>
+          <li><p>MV-SSM is the first to adapt visual mamba for the 3D multi-view multi-person pose estimation task.</p></li>
+          <li><p>Our Projective State Space (PSS) block integrates state space modeling and projection attention to 
+            effectively capture joint spatial sequences.</p></li>
+          <li><p>We introduce the Grid-Token guided Bidirectional Scanning (GTBS) to enhance performance.</p></li>
+          <li><p>MV-SSM significantly outperforms SOTA methods on in-domain 3D keypoints estimation and generalizability evaluation.</p></li>
+        </ul>
+        <br>
+        We conduct complete ablation studies to validate the effectiveness of each component in our model.
+        <br>
+        <div style="display: flex; justify-content: center;">
+          <br><br>
+          <img src="./static/images/Ablation.png" alt="Quantitative Results" style="width: 50%; height: auto;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br><br>
+</section>
+
+
+
+<div class="container is-max-desktop">
+  <div class="columns is-centered">
+    <div class="column is-full-width">
+      <h2 class="title is-3">Visual Comparisons</h2>
+      <p> 
+        We present a visual comparison against MVGFormer on CMU Panoptic benchmark.
+        The Ground truth human poses are shown in <span style="color:red;">red</span>
+        and the predicted pose is overlapped on it to show an accurate comparison. 
+        MV-SSM achieves accurate poses, especially in difficult scenarios, demonstrating 
+        superior performance. As illustrated in the first row, MV-SSM is better able to predict, 
+        for example, the person's left foot. Note that the colors of persons are different 
+        since we do not perform ID-matching.
+      </p><br>
+      <div style="display: flex; justify-content: center;">
+        <br><br>
+        <img src="./static/images/Visual_Comparison_MV-SSM.jpg" alt="Results" style="width: 60%; height: auto;">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@InProceedings{Chharia_2025_CVPR,
+      author    = {Chharia, Aviral and Gou, Wenbo and Dong, Haoye},
+      title     = {MV-SSM: Multi-View State Space Modeling for 3D Human Pose Estimation},
+      booktitle = {Proceedings of the Computer Vision and Pattern Recognition Conference (CVPR)},
+      month     = {June},
+      year      = {2025},
+      pages     = {11590-11599}
+    }
+    </code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+      href="https://openaccess.thecvf.com/content/CVPR2025/html/Chharia_MV-SSM_Multi-View_State_Space_Modeling_for_3D_Human_Pose_Estimation_CVPR_2025_paper.html" target="_blank">
+     <i class="fas fa-file-pdf"></i>
+   </a>
+   <a class="icon-link" href="https://github.com/aviralchharia/MV-SSM" target="_blank" class="external-link" disabled>
+     <i class="fab fa-github"></i>
+   </a>
+      <br />
+      <p>Page template borrowed from <a href="https://nerfies.github.io/" target="_blank"><span class="dnerf">Nerfies</span></a>.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
