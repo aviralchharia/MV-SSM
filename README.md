@@ -3,9 +3,9 @@
 # MV-SSM: Multi-View State Space Modeling for 3D Human Pose Estimation
 
 <div>
-    <a href='https://aviralchharia.github.io/' target='_blank'>Aviral Chharia*</a>&emsp;
-    <a href='https://www.linkedin.com/in/wenbogou' target='_blank'>Wenbo Gou*</a>&emsp;
-    <a href='https://www.haoyed.com/' target='_blank'>Haoye Dong*</a>&emsp;
+    <a href='https://aviralchharia.github.io/' target='_blank'>Aviral Chharia</a>&emsp;
+    <a href='https://www.linkedin.com/in/wenbogou' target='_blank'>Wenbo Gou</a>&emsp;
+    <a href='https://www.haoyed.com/' target='_blank'>Haoye Dong</a>&emsp;
 </div>
 <div>
     Carnegie Mellon University&emsp;  National University of Singapore<br>
@@ -21,9 +21,9 @@
 
 ---
 
-<img src="assets/Motivation.jpeg" width="49%"/>
+<img src="assets/Motivation.jpeg" width="90%"/>
 
-<strong> Comparison of different token scanning methods. (a) Cross Attention acts on all image tokens. (b) Projective Attention obtains anchors with perspective projection and selectively attends to sample tokens surrounding the anchor points. (c) The proposed Grid Token-guided Bidirectional Scanning (GTBS) encodes the local context and the joint spatial sequence at the visual feature and person-keypoint levels. </strong><br>
+<strong> Comparison of different token scanning methods. </strong> (a) Cross Attention acts on all image tokens. (b) Projective Attention obtains anchors with perspective projection and selectively attends to sample tokens surrounding the anchor points. (c) The proposed Grid Token-guided Bidirectional Scanning (GTBS) encodes the local context and the joint spatial sequence at the visual feature and person-keypoint levels. <br>
 :open_book: For visual results, go checkout our <a href="https://aviralchharia.github.io/MV-SSM/" target="_blank">project page</a>
 </div>
 
